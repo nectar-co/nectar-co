@@ -47,7 +47,7 @@ window.NECTAR_CATALOG = {
       "isNew": true,
       "isBestseller": true,
       "promoBadge": "12% OFF",
-      "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=700&q=80"
+      "image": "https://nobleperfumeria.com/wp-content/uploads/2026/01/49.5-Khamrah-Qahwa-Lattafa-Perfumes-Unisex.webp"
     },
     {
       "id": "nec-002",
