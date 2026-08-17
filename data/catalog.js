@@ -83,7 +83,7 @@ window.NECTAR_CATALOG = {
       "isNew": false,
       "isBestseller": true,
       "promoBadge": "MÁS VENDIDO",
-      "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=700&q=80"
+      "image": "https://fimgs.net/mdimg/perfume-thumbs/dark-375x500.34696.avif"
     }
   ]
 };
