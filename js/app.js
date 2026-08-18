@@ -56,31 +56,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   Cart.init();
   updateMobileStickyBar();
 
-  // Load Catalog Data (Fallback Strategy for 100% reliability offline/file:// & online)
-  if (window.NECTAR_CATALOG) {
-    state.catalog = window.NECTAR_CATALOG;
-    state.products = state.catalog.products || [];
-    initApp();
-  } else {
+  // Load Catalog Data (Always tries fresh data/catalog.json first, falls back to catalog.js)
+  async function loadCatalog() {
     try {
-      const res = await fetch('data/catalog.json');
-      if (!res.ok) throw new Error('Fetch failed');
-      state.catalog = await res.json();
+      // Add timestamp to completely bypass browser caching when online or on GitHub Pages
+      const res = await fetch(`data/catalog.json?_t=${Date.now()}`);
+      if (res.ok) {
+        state.catalog = await res.json();
+        state.products = state.catalog.products || [];
+        initApp();
+        return;
+      }
+    } catch (e) {
+      // Ignored for local file:// mode
+    }
+
+    if (window.NECTAR_CATALOG) {
+      state.catalog = window.NECTAR_CATALOG;
       state.products = state.catalog.products || [];
       initApp();
-    } catch (error) {
-      console.warn('Could not fetch catalog.json, trying fallback...', error);
+    } else {
       if (productsGrid) {
         productsGrid.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">⚠️</div>
             <h3>Error al cargar el catálogo de fragancias</h3>
-            <p>Por favor asegúrate de incluir <code>data/catalog.js</code> o estar conectado.</p>
+            <p>Verifica que el archivo <code>data/catalog.json</code> o <code>data/catalog.js</code> esté presente.</p>
           </div>
         `;
       }
     }
   }
+
+  loadCatalog();
 
   function initApp() {
     renderSections();
@@ -218,7 +226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="card-badges">${badgeHtml}</div>
 
           <div class="card-image-wrap" data-action="open-modal">
-            <img src="${product.image}" alt="${product.name}" loading="lazy" />
+            <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80';" />
             <button class="quick-view-overlay-btn" data-action="open-modal">Ver Notas ✦</button>
           </div>
 
@@ -317,7 +325,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     modalContentContainer.innerHTML = `
       <div class="modal-product-layout">
         <div class="modal-image-col">
-          <img src="${product.image}" alt="${product.name}" />
+          <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80';" />
         </div>
 
         <div class="modal-info-col">
